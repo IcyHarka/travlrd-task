@@ -35,7 +35,7 @@ async function syncAirtableToSupabase() {
 
     const { data: error } = await supabase
       .from(SUPABASE_TABLE_NAME)
-      .upsert(data, { onConflict: "airtable_id" });
+      .upsert(data, { onConflict: "id" });
 
     if (error) {
       console.error("Error inserting data into Supabase:", error);
