@@ -17,25 +17,25 @@ const base = Airtable.base(AIRTABLE_BASE_ID);
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-let recordCounter = 1;
-
 async function syncAirtableToSupabase() {
   try {
     const records = await base(AIRTABLE_TABLE_NAME).select().all();
 
     const data = records.map((record) => {
-      return {
-        id: recordCounter++,
-        airtable_id: record.id,
-        title: record.fields.Title,
-        image_url: record.fields.Image,
-        short_description: record.fields["Short Description"]
-      };
+      const fields = record.fields;
+      let formattedRecord = { airtable_id: record.id };
+
+      for (const [key, value] of Object.entries(fields)) {
+        const formattedKey = key.toLowerCase().replace(/ /g, "_");
+        formattedRecord[formattedKey] = value;
+      }
+
+      return formattedRecord;
     });
 
     const { data: error } = await supabase
       .from(SUPABASE_TABLE_NAME)
-      .upsert(data, { onConflict: "id" });
+      .upsert(data, { onConflict: "airtable_id" });
 
     if (error) {
       console.error("Error inserting data into Supabase:", error);
