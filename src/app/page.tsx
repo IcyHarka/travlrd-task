@@ -3,6 +3,7 @@ import supabase from "../lib/supabaseClient";
 import { Suspense } from "react";
 import "tailwindcss/tailwind.css";
 import Image from "next/image";
+import FormComponent from "./components/FormComponent";
 
 const Home = async () => {
   const { data: content, error } = await supabase.from("content").select("*");
@@ -36,11 +37,14 @@ const Home = async () => {
             <div className="flex flex-col gap-2">
               <h4 className="text-md font-semibold">{item.title}</h4>
               <p className="text-sm text-gray-600">{item.short_description}</p>
-              <div className="p-2 py-1 text-xs rounded-2xl bg-blue-400 w-max text-white">6 perc</div>
+              <div className="p-2 py-1 text-xs rounded-2xl bg-blue-400 w-max text-white">
+                6 perc
+              </div>
             </div>
           </div>
         ))}
       </div>
+      <FormComponent />
     </div>
   );
 };
